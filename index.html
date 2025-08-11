@@ -118,7 +118,7 @@
   gap: 8px;
   margin-top: 12px;
 }
-.btn-red {
+  .btn-red {
   background-color: #ff1e1e; /* match underline */
   color: #fff;
   text-decoration: none;
@@ -130,7 +130,11 @@
   transition: background-color .2s ease;
 }
 .btn-red:hover { background-color: #cc0000; }
-</style></head>
+</style>
+<style>
+#map { width: 100%; height: 480px; border-radius: 12px; }
+</style>
+</head>
 <body>
 <header class="nav">
 <div class="title">Universiti Teknologi MARA</div>
@@ -172,6 +176,12 @@
 <p>Mohamad Farid bin Misnan received his Bachelor's degree in Electrical Engineering from Universiti Teknologi MARA (UiTM) in July 2009, respectively. In July 2017, he completed his PhD at Universiti Teknologi MARA (UiTM), majoring in Robotic &amp; Automation Electrical Engineering. He has five years of industrial experience, primarily in Robotic &amp; Automation Design. He is currently a Senior Lecturer at Faculty of Electrical Engineering, Universiti Teknologi MARA (UiTM). Since 2015, he has been actively engaged in teaching and learning activities, including accreditation processes involving the Jabatan Pembangunan Kemahiran (JPK), Malaysia Board of Technology (MBoT), and Malaysia Qualification Agency (MQA). His primary research interests encompass advanced automation systems, unmanned vehicles, Internet of Things (IoT) integration, sensory network technology, and hydrogen fuel cell automation controller development. He has published articles in international journals, conference proceedings, policy and technical papers on various topics related to robotic automation, internet of things, engineering work monitoring, artificial intelligent control strategy and hydrogen fuel cell advance controller development. His research currently collaborated with Indonesia, Iraq and India in automation and internet of things engineering applications development. Beside the academic engineering knowledge, He has led several industrial and community projects that have effectively integrated knowledge of advanced automation technology, significantly impacting the broader community and supporting sustainable development goals. His efforts in projects such as the Kebun Komuniti succeeded an high impact achievement of a four-star rating community project for integrating automation in farming applications. Additionally, he has achieved several three-star ratings for community projects promoting Robotic-STEM education, involving primary and secondary school students. Beyond his research and community involvement, He is also deeply engaged in TVET and STEM academic development included programme in Kolej Vokasional Ministry of Education. He plays a crucial role in advancing TVET by developing curricula, participating in educational initiatives, and promoting skills development in technology and engineering. His holistic approach to education and research demonstrates his dedication to fostering innovation and improving societal outcomes. His work contributes to the broader mission of preparing students and professionals for the evolving demands of the technological landscape.</p>
 </div>
 <p></p><div class="button-links"><a class="btn-red" href="https://expert.uitm.edu.my/V2/page-detail.php?id=P08wtaAI6S3/ppHNDaw/5rvYuM88WGTlmVdBXaYZWrM=" target="_blank">UiTM Expert</a><a class="btn-red" href="mailto:mohamadfarid@uitm.edu.my">mohamadfarid@uitm.edu.my</a><a class="btn-red" href="https://sites.google.com/uitm.edu.my/e-portfolio-ild2020" target="_blank">UiTM e‑Portfolio</a><a class="btn-red" href="https://mfmjawa.github.io/" target="_blank">GitHub Page</a></div></section>
+<section class="section" id="weather">
+  <div class="card">
+    <h2>Weather Map</h2>
+    <div id="map"></div>
+  </div>
+</section>
 <section class="section" id="contact">
 <div class="card">
 <h2>Contact</h2>
@@ -181,6 +191,53 @@
 <footer>
     © <span id="y"></span> Mohamad Farid Bin Misnan
   </footer>
+<script>
+(function() {
+  var params = new URLSearchParams(location.search);
+  if (!window.GMAPS_API_KEY) window.GMAPS_API_KEY = params.get('gmaps_key') || '';
+  if (!window.OWM_API_KEY) window.OWM_API_KEY = params.get('owm_key') || '';
+
+  function loadGoogleMaps(apiKey) {
+    var s = document.createElement('script');
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=' + encodeURIComponent(apiKey) + '&callback=initMap';
+    s.async = true; s.defer = true;
+    document.head.appendChild(s);
+  }
+
+  window.initMap = function() {
+    var mapEl = document.getElementById('map');
+    if (!mapEl) return;
+
+    var map = new google.maps.Map(mapEl, {
+      center: { lat: 3.0738, lng: 101.5183 },
+      zoom: 6,
+      mapTypeId: 'terrain',
+      streetViewControl: false,
+      fullscreenControl: true
+    });
+
+    if (window.OWM_API_KEY) {
+      var temperatureTiles = new google.maps.ImageMapType({
+        getTileUrl: function(coord, zoom) {
+          return 'https://tile.openweathermap.org/map/temp_new/' + zoom + '/' + coord.x + '/' + coord.y + '.png?appid=' + encodeURIComponent(window.OWM_API_KEY);
+        },
+        tileSize: new google.maps.Size(256, 256),
+        name: 'Temperature'
+      });
+      map.overlayMapTypes.clear();
+      map.overlayMapTypes.push(temperatureTiles);
+    }
+  };
+
+  if (document.getElementById('map')) {
+    if (window.GMAPS_API_KEY) {
+      loadGoogleMaps(window.GMAPS_API_KEY);
+    } else {
+      console.warn('Set GMAPS_API_KEY or provide ?gmaps_key=YOUR_KEY and ?owm_key=YOUR_KEY in URL.');
+    }
+  }
+})();
+</script>
 <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
